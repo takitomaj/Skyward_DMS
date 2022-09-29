@@ -70,7 +70,8 @@ public class movement : MonoBehaviour
         }
         else if(rb.velocity.y< -.1f)
         {
-            state = MovementState.falling;
+            //Caida
+		state = MovementState.falling;
 		
         }
         anim.SetInteger("state", (int)state);
