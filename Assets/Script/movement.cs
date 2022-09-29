@@ -14,6 +14,7 @@ public class movement : MonoBehaviour
     [SerializeField] private LayerMask jumpableGround;
     private enum MovementState {idle,running,jumping,falling }
     [SerializeField] private AudioSource Jumpaffect;
+    [SerializeField] private AudioSource fallffect;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -43,25 +44,34 @@ public class movement : MonoBehaviour
         {
             state = MovementState.running;
             sprite.flipX = false;
+		if(!Input.GetButtonDown("Jump") && isGrounded()){
+			fallffect.Play();
+		}
         }
 
         else if (dirx < 0f)
         {
             state = MovementState.running;
             sprite.flipX = true;
+		if(!Input.GetButtonDown("Jump") && isGrounded()){
+			fallffect.Play();
+		}
         }
         else
         {
+		
             state = MovementState.idle;
         }
 
         if(rb.velocity.y> .1f)
         {
+		//inicio salto
             state = MovementState.jumping;
         }
         else if(rb.velocity.y< -.1f)
         {
             state = MovementState.falling;
+		
         }
         anim.SetInteger("state", (int)state);
      
