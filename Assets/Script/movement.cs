@@ -13,14 +13,16 @@ public class movement : MonoBehaviour
     [SerializeField] private float jumpforce = 9f;
     [SerializeField] private LayerMask jumpableGround;
     private enum MovementState {idle,running,jumping,falling }
-    [SerializeField] private AudioSource Jumpaffect;
-    [SerializeField] private AudioSource fallffect;
+    [SerializeField] private AudioSource Jumpeffect;
+    [SerializeField] private AudioSource Falleffect;
+    AudioSource Walkeffect;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
         sprite = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+	  Walkeffect = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -30,7 +32,7 @@ public class movement : MonoBehaviour
         rb.velocity = new Vector2(dirx * movespeed,rb.velocity.y);
         if(Input.GetButtonDown("Jump") && isGrounded())
         {
-            Jumpaffect.Play();
+            Jumpeffect.Play();
             GetComponent<Rigidbody2D>().velocity = new Vector3(rb.velocity.x, jumpforce);
         }
 
@@ -45,7 +47,15 @@ public class movement : MonoBehaviour
             state = MovementState.running;
             sprite.flipX = false;
 		if(!Input.GetButtonDown("Jump") && isGrounded()){
-			fallffect.Play();
+			if (!Walkeffect.isPlaying)
+                  {
+				Walkeffect.Play();
+			}
+
+		}
+		else	
+		{
+			Walkeffect.Stop();
 		}
         }
 
@@ -54,7 +64,15 @@ public class movement : MonoBehaviour
             state = MovementState.running;
             sprite.flipX = true;
 		if(!Input.GetButtonDown("Jump") && isGrounded()){
-			fallffect.Play();
+			if (!Walkeffect.isPlaying)
+                  {
+				Walkeffect.Play();
+			}
+
+		}
+		else	
+		{
+			Walkeffect.Stop();
 		}
         }
         else
@@ -72,7 +90,17 @@ public class movement : MonoBehaviour
         {
             //Caida
 		state = MovementState.falling;
-		
+		if(!Input.GetButtonDown("Jump") && isGrounded()){
+			if (!Falleffect.isPlaying)
+                  {
+				Falleffect.Play();
+			}
+
+		}
+		else	
+		{
+			Falleffect.Stop();
+		}
         }
         anim.SetInteger("state", (int)state);
      
@@ -82,3 +110,4 @@ public class movement : MonoBehaviour
         return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
     }
 }
+
